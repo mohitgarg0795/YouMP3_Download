@@ -14,7 +14,7 @@ chrome.runtime.onMessage.addListener(
 				//console.log(downloadUrl.slice(62,downloadUrl.length));
 				//console.log(downloadUrl.slice(51,56));
 				completeUrl = "http://" + downloadUrl.slice(51,downloadUrl.indexOf("&")) + ".listentoyoutube.com/download/" + downloadUrl.slice(62,downloadUrl.length);
-				console.log(completeUrl);
+				//console.log(completeUrl);
 				window.location.href = completeUrl;
 				setTimeout(function(){chrome.runtime.sendMessage({ "message" : "closeTab" });},2000);
 			}

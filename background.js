@@ -17,15 +17,30 @@ chrome.runtime.onMessage.addListener(
 				})
 			}
 		if(request.message == "closeTab")
-			chrome.tabs.remove(tabId);
+			{
+				flag = 0;				//in case of successful download, reset flag to default
+				chrome.tabs.remove(tabId);
+			};
 })
 
 
-chrome.tabs.onUpdated.addListener(function(tabId, info, tab){
+chrome.tabs.onUpdated.addListener(function(tabid, info, tab){
 	//console.log(tab)
-    if(info.status == "complete" && flag==1)
+    if(info.status == "complete" && tab.id==tabId)
     	{	
-    		flag = 0;
-    		chrome.tabs.sendMessage(tabId, { "message" : "downloadIt" });
+    		if(flag==1)
+    			{
+    				//console.log("flag" + flag);
+    				flag++;
+    				chrome.tabs.sendMessage(tabId, { "message" : "downloadIt" });
+    			}
+    		else
+    			{
+    				if(flag==2)				//in case of invalid links
+    					{	
+    						flag = 0;
+    						chrome.tabs.remove(tabId);
+    					}
+    			}
     	}
 });
