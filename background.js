@@ -1,20 +1,32 @@
-var tabId, flag = 0;
-
-chrome.browserAction.onClicked.addListener(function(tab){
-	chrome.tabs.query({ active : true, currentWindow : true}, function(tabs){
-		chrome.tabs.sendMessage(tabs[0].id, { "message" : "pass url"});
-	})
-})
+var tabId, flag = 0, quality;
 
 chrome.runtime.onMessage.addListener(
 	function(request, sender, sendResponse){
 		console.log(request.message)
+		if(request.message == "checkUrl")
+			{
+				chrome.tabs.query({ active : true, currentWindow : true}, function(tabs){
+					chrome.tabs.sendMessage(tabs[0].id, { "message" : "pass url", "quality" : request.quality });
+				})						
+			}
 		if(request.message == "url sent")
 			{
 				flag = 1;
-				chrome.tabs.create({ "url" : "http://www.listentoyoutube.com/process.php?url=" + request.downloadUrl, active : false }, function(tab){
-					tabId = tab.id;
-				})
+				quality = request.quality;
+
+				if(quality == "high")
+					{	
+						chrome.tabs.create({ "url" : "http://www.listentoyoutube.com/process.php?url=" + request.downloadUrl, active : false }, function(tab){
+						tabId = tab.id;
+						})
+					}
+
+				if(quality == "low")
+					{	
+						chrome.tabs.create({ "url" : "http://www.youtubeinmp3.com/download/?video=" + request.downloadUrl, active : false }, function(tab){
+						tabId = tab.id;
+						})
+					}
 			}
 		if(request.message == "closeTab")
 			{
@@ -32,7 +44,7 @@ chrome.tabs.onUpdated.addListener(function(tabid, info, tab){
     			{
     				//console.log("flag" + flag);
     				flag++;
-    				chrome.tabs.sendMessage(tabId, { "message" : "downloadIt" });
+    				chrome.tabs.sendMessage(tabId, { "message" : "downloadIt" , "quality" : quality});
     			}
     		else
     			{
