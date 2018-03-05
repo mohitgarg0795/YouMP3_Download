@@ -1,4 +1,4 @@
-#YouMP3Download
+<h1>YouMP3Download</h1>
 A simple chrome extension to download youtube videos in mp3 format on a single click
 
 <h2>How to install :</h2>
